@@ -102,7 +102,7 @@ def check_order():
         suggestion_list = result['suggestions'][:3]
         if suggestion_list:
             suggestions_str = ', '.join(suggestion_list)
-            response = f"{user_order} is not available, but did you mean {suggestions_str}? Would you like to order that instead?"
+            response = f"{user_order} is not available, but we have {suggestions_str}? Would you like to order that instead?"
         else:
             response = f"Sorry, we couldn't find anything similar to '{user_order}' in the menu."
 
