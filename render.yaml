@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: pizza-menu-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn Item_Present:app
+    envVars:
+      - key: GOOGLE_CREDS_JSON
+        sync: false
