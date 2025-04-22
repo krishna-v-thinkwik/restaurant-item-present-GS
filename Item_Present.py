@@ -84,11 +84,33 @@ def check_order():
     user_order = request_data.get('order')
 
     if not user_order:
-        return jsonify({"error": "Missing 'order' in request body"}), 400
+        return jsonify("❌ Missing 'order' in request body"), 400
 
     menu_items, categories = get_menu_items()
     result = check_and_suggest(user_order, menu_items, categories)
-    return jsonify(result)
+
+    # Build string response
+    if result['status'] == 'available':
+        response = result['message']
+
+    elif result['status'] == 'category_suggested':
+        suggestion_list = result['suggestions'][:3]
+        suggestions_str = ', '.join(suggestion_list)
+        response = f"{user_order} is not available, but here are some {result['message'].split('from ')[-1]} like {suggestions_str}. Would you like to order one of these?"
+
+    elif result['status'] == 'not_found':
+        suggestion_list = result['suggestions'][:3]
+        if suggestion_list:
+            suggestions_str = ', '.join(suggestion_list)
+            response = f"{user_order} is not available, but did you mean {suggestions_str}? Would you like to order that instead?"
+        else:
+            response = f"Sorry, we couldn't find anything similar to '{user_order}' in the menu."
+
+    else:
+        response = "An unexpected error occurred."
+
+    return response
+
 
 if __name__ == '__main__':
     app.run(debug=True)
